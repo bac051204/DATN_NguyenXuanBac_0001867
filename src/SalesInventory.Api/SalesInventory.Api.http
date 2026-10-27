@@ -1,0 +1,46 @@
+@host = http://localhost:5256
+
+# CategoryId 1 = Văn phòng phẩm, 2 = Đồ gia dụng, 3 = Thực phẩm (dữ liệu seed)
+POST {{host}}/api/products
+Content-Type: application/json
+
+{ "sku": "SP001", "name": "Bút bi", "price": 5000, "stockQuantity": 100, "categoryId": 1 }
+
+###
+
+GET {{host}}/api/products
+
+###
+
+GET {{host}}/api/products/1
+
+###
+
+PUT {{host}}/api/products/1
+Content-Type: application/json
+
+{ "sku": "SP001", "name": "Bút bi xanh", "price": 6000, "stockQuantity": 120, "categoryId": 1 }
+
+###
+
+DELETE {{host}}/api/products/1
+
+###
+
+POST {{host}}/api/products/1/stock
+Content-Type: application/json
+
+{ "delta": 20 }
+
+###
+
+POST {{host}}/api/orders
+Content-Type: application/json
+
+{ "customerName": "Nguyễn Văn A", "items": [ { "productId": 1, "quantity": 3 } ] }
+
+###
+
+POST {{host}}/api/orders/1/cancel
+
+###
