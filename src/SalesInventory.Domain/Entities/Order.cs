@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
-
-namespace SalesInventory.Api.Models;
+namespace SalesInventory.Domain.Entities;
 
 public enum OrderStatus
 {
@@ -21,10 +19,7 @@ public class Order
 public class OrderItem
 {
     public int Id { get; set; }
-
-    [JsonIgnore]
     public int OrderId { get; set; }
-
     public int ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
     public decimal UnitPrice { get; set; }

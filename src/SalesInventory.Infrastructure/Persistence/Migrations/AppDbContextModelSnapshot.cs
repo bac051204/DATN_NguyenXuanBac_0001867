@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SalesInventory.Api.Data;
+using SalesInventory.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SalesInventory.Api.Data.Migrations
+namespace SalesInventory.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261027070506_InitialCreate")]
-    partial class InitialCreate
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,13 +22,17 @@ namespace SalesInventory.Api.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Category", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -60,7 +61,7 @@ namespace SalesInventory.Api.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Order", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,7 +87,7 @@ namespace SalesInventory.Api.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.OrderItem", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,7 +122,7 @@ namespace SalesInventory.Api.Data.Migrations
                     b.ToTable("OrderItems", (string)null);
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Product", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,7 +138,11 @@ namespace SalesInventory.Api.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("PurchasePrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SalePrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -159,30 +164,32 @@ namespace SalesInventory.Api.Data.Migrations
 
                     b.ToTable("Products", t =>
                         {
-                            t.HasCheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
+                            t.HasCheckConstraint("CK_Products_PurchasePrice_NonNegative", "[PurchasePrice] >= 0");
+
+                            t.HasCheckConstraint("CK_Products_SalePrice_NonNegative", "[SalePrice] >= 0");
 
                             t.HasCheckConstraint("CK_Products_StockQuantity_NonNegative", "[StockQuantity] >= 0");
                         });
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.OrderItem", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("SalesInventory.Api.Models.Order", null)
+                    b.HasOne("SalesInventory.Domain.Entities.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SalesInventory.Api.Models.Product", null)
+                    b.HasOne("SalesInventory.Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Product", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("SalesInventory.Api.Models.Category", "Category")
+                    b.HasOne("SalesInventory.Domain.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -191,12 +198,12 @@ namespace SalesInventory.Api.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Category", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("SalesInventory.Api.Models.Order", b =>
+            modelBuilder.Entity("SalesInventory.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Items");
                 });

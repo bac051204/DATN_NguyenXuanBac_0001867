@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using SalesInventory.Api.Data;
+using SalesInventory.Infrastructure.Persistence;
 using SalesInventory.Api.Dtos;
-using SalesInventory.Api.Models;
+using SalesInventory.Domain.Entities;
 
 namespace SalesInventory.Api.Tests;
 
@@ -63,7 +63,7 @@ public class ApiIntegrationTests : IDisposable
             new UpdateProductRequest("SP001", "Bút bi xanh", 6000, 8, 2));
         updated.EnsureSuccessStatusCode();
         var afterUpdate = await GetProduct(product.Id);
-        Assert.Equal((6000m, 2), (afterUpdate.Price, afterUpdate.CategoryId));
+        Assert.Equal((6000m, 2), (afterUpdate.SalePrice, afterUpdate.CategoryId));
 
         // DELETE
         var deleted = await _client.DeleteAsync($"/api/products/{product.Id}");

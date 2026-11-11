@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using SalesInventory.Api.Data;
+using SalesInventory.Infrastructure.Persistence;
 
 namespace SalesInventory.Api.Tests;
 

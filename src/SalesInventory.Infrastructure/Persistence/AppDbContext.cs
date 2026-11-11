@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SalesInventory.Api.Models;
+using SalesInventory.Domain.Entities;
 
-namespace SalesInventory.Api.Data;
+namespace SalesInventory.Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Category>(e =>
         {
             e.Property(c => c.Name).HasMaxLength(100).IsRequired();
+            e.Property(c => c.Description).HasMaxLength(500);
             e.HasData(
                 new Category { Id = 1, Name = "Văn phòng phẩm" },
                 new Category { Id = 2, Name = "Đồ gia dụng" },
@@ -25,14 +26,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(p => p.Sku).HasMaxLength(50).IsRequired();
             e.HasIndex(p => p.Sku).IsUnique();
             e.Property(p => p.Name).HasMaxLength(200).IsRequired();
-            e.Property(p => p.Price).HasPrecision(18, 2);
+            e.Property(p => p.PurchasePrice).HasPrecision(18, 2);
+            e.Property(p => p.SalePrice).HasPrecision(18, 2);
+            // Optimistic concurrency on stock (was [ConcurrencyCheck] on the entity).
+            e.Property(p => p.StockQuantity).IsConcurrencyToken();
             e.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
             e.ToTable(t =>
             {
-                t.HasCheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
+                t.HasCheckConstraint("CK_Products_PurchasePrice_NonNegative", "[PurchasePrice] >= 0");
+                t.HasCheckConstraint("CK_Products_SalePrice_NonNegative", "[SalePrice] >= 0");
                 t.HasCheckConstraint("CK_Products_StockQuantity_NonNegative", "[StockQuantity] >= 0");
             });
         });

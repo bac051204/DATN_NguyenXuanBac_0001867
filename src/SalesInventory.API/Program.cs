@@ -1,14 +1,8 @@
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
-using SalesInventory.Api.Data;
 using SalesInventory.Api.Services;
+using SalesInventory.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Cấu hình bí mật cục bộ (chuỗi kết nối...) không đưa vào Git.
-// Tạo từ appsettings.Local.example.json, ví dụ: appsettings.Development.Local.json.
-builder.Configuration.AddJsonFile(
-    $"appsettings.{builder.Environment.EnvironmentName}.Local.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -17,8 +11,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
 
-builder.Services.AddDbContext<AppDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+// DbContext + SQL Server; connection string comes from user-secrets / environment (see DependencyInjection.cs).
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
