@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SalesInventory.Api</RootNamespace>
+    <UserSecretsId>1bdf4b72-b531-49ff-8cc5-21e74dc5b82e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,8 +13,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SalesInventory.Application\SalesInventory.Application.csproj" />
+    <ProjectReference Include="..\SalesInventory.Infrastructure\SalesInventory.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

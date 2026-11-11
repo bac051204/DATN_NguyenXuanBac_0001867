@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SalesInventory.Api\SalesInventory.Api.csproj" />
+    <ProjectReference Include="..\..\src\SalesInventory.API\SalesInventory.API.csproj" />
   </ItemGroup>
 
 </Project>

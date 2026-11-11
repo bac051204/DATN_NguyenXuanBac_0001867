@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SalesInventory.Api.Data;
+using SalesInventory.Infrastructure.Persistence;
 using SalesInventory.Api.Dtos;
-using SalesInventory.Api.Models;
+using SalesInventory.Domain.Entities;
 
 namespace SalesInventory.Api.Services;
 
@@ -29,7 +29,8 @@ public class ProductService(AppDbContext db)
         {
             Sku = request.Sku,
             Name = request.Name,
-            Price = request.Price,
+            PurchasePrice = request.PurchasePrice,
+            SalePrice = request.SalePrice,
             StockQuantity = request.StockQuantity,
             CategoryId = request.CategoryId
         };
@@ -46,7 +47,8 @@ public class ProductService(AppDbContext db)
 
         product.Sku = request.Sku;
         product.Name = request.Name;
-        product.Price = request.Price;
+        product.PurchasePrice = request.PurchasePrice;
+        product.SalePrice = request.SalePrice;
         product.StockQuantity = request.StockQuantity;
         product.CategoryId = request.CategoryId;
         await db.SaveChangesAsync();

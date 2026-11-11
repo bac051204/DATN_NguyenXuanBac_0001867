@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace SalesInventory.Api.Data.Migrations
+namespace SalesInventory.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -19,7 +19,8 @@ namespace SalesInventory.Api.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,14 +50,16 @@ namespace SalesInventory.Api.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Sku = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    PurchasePrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    SalePrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     StockQuantity = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
-                    table.CheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
+                    table.CheckConstraint("CK_Products_PurchasePrice_NonNegative", "[PurchasePrice] >= 0");
+                    table.CheckConstraint("CK_Products_SalePrice_NonNegative", "[SalePrice] >= 0");
                     table.CheckConstraint("CK_Products_StockQuantity_NonNegative", "[StockQuantity] >= 0");
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
@@ -97,12 +100,12 @@ namespace SalesInventory.Api.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Văn phòng phẩm" },
-                    { 2, "Đồ gia dụng" },
-                    { 3, "Thực phẩm" }
+                    { 1, null, "Văn phòng phẩm" },
+                    { 2, null, "Đồ gia dụng" },
+                    { 3, null, "Thực phẩm" }
                 });
 
             migrationBuilder.CreateIndex(

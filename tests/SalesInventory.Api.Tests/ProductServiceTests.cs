@@ -12,7 +12,7 @@ public class ProductServiceTests : IDisposable
 
     private ProductService NewService() => new(_db.CreateContext());
 
-    private Task<Api.Models.Product> Create(string sku, int stock = 10) =>
+    private Task<Domain.Entities.Product> Create(string sku, int stock = 10) =>
         NewService().CreateAsync(new CreateProductRequest(sku, $"Sản phẩm {sku}", 5000, stock, CategoryId));
 
     [Fact]
@@ -49,7 +49,7 @@ public class ProductServiceTests : IDisposable
 
         var fetched = await NewService().GetByIdAsync(product.Id);
         Assert.Equal(("SP001-X", "Bút mực", 7000m, 3, 2),
-            (fetched.Sku, fetched.Name, fetched.Price, fetched.StockQuantity, fetched.CategoryId));
+            (fetched.Sku, fetched.Name, fetched.SalePrice, fetched.StockQuantity, fetched.CategoryId));
     }
 
     [Fact]

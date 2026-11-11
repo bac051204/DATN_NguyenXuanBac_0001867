@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SalesInventory.Api.Data;
+using SalesInventory.Infrastructure.Persistence;
 using SalesInventory.Api.Dtos;
-using SalesInventory.Api.Models;
+using SalesInventory.Domain.Entities;
 
 namespace SalesInventory.Api.Services;
 
@@ -45,7 +45,7 @@ public class OrderService(AppDbContext db, TimeProvider clock)
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
-                UnitPrice = product.Price,
+                UnitPrice = product.SalePrice,
                 Quantity = line.Quantity
             });
         }
