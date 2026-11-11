@@ -28,7 +28,14 @@ sales-inventory/
 | `SalesInventory.API` | Presentation (trình bày) | ASP.NET Core Web API | Controller / endpoint HTTP, cấu hình DI, middleware, Swagger, xác thực. Là *composition root*: nơi đăng ký Application và Infrastructure vào container. | Application, Infrastructure |
 | `SalesInventory.Api.Tests` | Kiểm thử | xUnit | Unit test cho service và integration test cho API. | API |
 
-> **Ghi chú hiện trạng:** Models, `AppDbContext`, Migrations và Services hiện vẫn nằm trong `SalesInventory.API` (code có từ trước). Chúng sẽ được chuyển lần lượt sang Domain, Infrastructure và Application ở các bước sau.
+> **Ghi chú hiện trạng:** entity đã nằm ở `SalesInventory.Domain/Entities`; `AppDbContext`, cấu hình Fluent API và Migrations đã nằm ở `SalesInventory.Infrastructure/Persistence`, đăng ký qua `AddInfrastructure()`. Services và DTO vẫn còn trong API (xem *Nợ kỹ thuật đã biết*).
+
+## Nợ kỹ thuật đã biết
+
+| # | Nợ | Vì sao chưa sửa | Sửa ở đâu |
+|---|---|---|---|
+| NKT-01 | `ProductService`, `OrderService` (thư mục `Services/`) và DTO (thư mục `Dtos/`) vẫn nằm trong `SalesInventory.API`. Service dùng trực tiếp `AppDbContext` của Infrastructure. | Application không được tham chiếu Infrastructure. Chuyển service sang Application ngay bây giờ sẽ không build được, hoặc phải đảo chiều phụ thuộc. Cần có interface truy cập dữ liệu khai báo ở Application trước. | **Bài 16** (Repository và Service): interface ở Application, cài đặt ở Infrastructure, rồi chuyển service và DTO sang Application. |
+| NKT-02 | Controller trả **entity** thay vì DTO, nên JSON có thêm `"category": null` (sản phẩm) và `"orderId"` (dòng đơn). Không dùng `[JsonIgnore]` (kiến trúc cấm), không bật `ReferenceHandler.IgnoreCycles`. Tạm thời phải tránh `.Include` hai chiều (`Category` ↔ `Products`), vì sẽ lỗi vòng khi tạo JSON. | Đổi hình dạng response thuộc phạm vi bài CRUD. | **Bài 17** (CRUD Danh mục và Sản phẩm): controller trả DTO. |
 
 ## Sơ đồ phụ thuộc
 
