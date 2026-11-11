@@ -37,6 +37,8 @@ API ──► Application ──► Domain ◄── Infrastructure
 
 Nợ kỹ thuật đã biết (Services/DTO còn ở API, controller trả entity): `docs/solution-structure.md`.
 
+**Health check:** `GET /api/health` (`HealthController`) trả 200 `{ "status": "ok" }`, không chạm database. Khi thêm xác thực ở Tuần 4, endpoint này **phải giữ `[AllowAnonymous]`** (dùng cho kiểm tra container ở Tuần 10).
+
 ## Lệnh
 ```
 dotnet build

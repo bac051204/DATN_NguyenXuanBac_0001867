@@ -45,6 +45,16 @@ public class ApiIntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task Health_Returns200WithStatusOk()
+    {
+        var response = await _client.GetAsync("/api/health");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
+        Assert.Equal("{\"status\":\"ok\"}", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task ProductCrud_FullFlow()
     {
         // POST
